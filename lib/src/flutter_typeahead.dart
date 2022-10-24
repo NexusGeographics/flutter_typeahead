@@ -230,9 +230,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:flutter_typeahead/src/keyboard_suggestion_selection_notifier.dart';
-import 'package:flutter_typeahead/src/should_refresh_suggestion_focus_index_notifier.dart';
 
+import 'keyboard_suggestion_selection_notifier.dart';
+import 'should_refresh_suggestion_focus_index_notifier.dart';
 import 'typedef.dart';
 import 'utils.dart';
 
@@ -693,6 +693,10 @@ class TypeAheadField<T> extends StatefulWidget {
   // Adds a callback for the suggestion box opening or closing
   final void Function(bool)? onSuggestionsBoxToggle;
 
+
+  final SuggestionController? suggestionController;
+
+
   /// Creates a [TypeAheadField]
   TypeAheadField({
     Key? key,
@@ -701,6 +705,7 @@ class TypeAheadField<T> extends StatefulWidget {
     required this.onSuggestionSelected,
     this.textFieldConfiguration: const TextFieldConfiguration(),
     this.suggestionsBoxDecoration: const SuggestionsBoxDecoration(),
+    this.suggestionController,
     this.debounceDuration: const Duration(milliseconds: 300),
     this.suggestionsBoxController,
     this.scrollController,
@@ -734,6 +739,23 @@ class TypeAheadField<T> extends StatefulWidget {
 
   @override
   _TypeAheadFieldState<T> createState() => _TypeAheadFieldState<T>();
+}
+
+class SuggestionController {
+  _TypeAheadFieldState? _state;
+  _SuggestionsListState? _stateList;
+
+  void _addState(_TypeAheadFieldState state) {
+    _state = state;
+  }
+  void _addStateList(_SuggestionsListState stateList) {
+    _stateList = stateList;
+  }
+
+  void forceRefresh(){
+    _stateList?.invalidateSuggestions();
+  }
+
 }
 
 class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
@@ -800,6 +822,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    widget.suggestionController?._addState(this);
 
     if (widget.textFieldConfiguration.controller == null) {
       this._textEditingController = TextEditingController();
@@ -910,6 +933,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
           suggestionsBox: _suggestionsBox,
           decoration: widget.suggestionsBoxDecoration,
           debounceDuration: widget.debounceDuration,
+          suggestionController: widget.suggestionController,
           controller: this._effectiveController,
           loadingBuilder: widget.loadingBuilder,
           scrollController: widget.scrollController,
@@ -1077,12 +1101,16 @@ class _SuggestionsList<T> extends StatefulWidget {
   final KeyEventResult Function(FocusNode _, RawKeyEvent event) onKeyEvent;
   final bool hideKeyboardOnDrag;
 
+
+  final SuggestionController? suggestionController;
+
   _SuggestionsList({
     required this.suggestionsBox,
     this.controller,
     this.getImmediateSuggestions: false,
     this.onSuggestionSelected,
     this.suggestionsCallback,
+    this.suggestionController,
     this.itemBuilder,
     this.scrollController,
     this.decoration,
@@ -1178,6 +1206,7 @@ class _SuggestionsListState<T> extends State<_SuggestionsList<T>>
   @override
   void initState() {
     super.initState();
+    widget.suggestionController?._addStateList(this);
 
     this._animationController = AnimationController(
       vsync: this,
