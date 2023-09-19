@@ -17,7 +17,7 @@ builder function
 decoration, custom TextEditingController, text styling, etc.
 * Provides two versions, a normal version and a [FormField](https://docs.flutter.io/flutter/widgets/FormField-class.html)
 version that accepts validation, submitting, etc.
-* Provides high customizability; you can customize the suggestion box decoration,
+* Provides high customizable; you can customize the suggestion box decoration,
 the loading bar, the animation, the debounce duration, etc.
 
 ## Installation
@@ -162,6 +162,36 @@ The `transitionBuilder` allows us to customize the animation of the
 suggestion box. In this example, we are returning the suggestionsBox
 immediately, meaning that we don't want any animation.
 
+### Material with Alternative Layout Architecture:
+
+By default, TypeAhead uses a `ListView` to render the items created by `itemBuilder`. If you specify a `layoutArchitecture` component, it will use this component instead. For example, here's how we render the items in a grid using the standard `GridView`:
+
+```dart
+TypeAheadField(
+    ...,
+  layoutArchitecture: (items, scrollContoller) {
+        return ListView(
+            controller: scrollContoller,
+            shrinkWrap: true,
+            children: [
+              GridView.count(
+                physics: const ScrollPhysics(),
+                crossAxisCount: 3,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                childAspectRatio: 5 / 5,
+                shrinkWrap: true,
+                children: items.toList(),
+              ),
+            ]);
+      },
+);
+```
+
+### Cupertino Example:
+
+
+
 ### Cupertino Example:
 Please see the Cupertino code in the example project.
 
@@ -223,6 +253,11 @@ Use the `offsetX` property in `SuggestionsBoxDecoration` to shift the suggestion
 You may also pass BoxConstraints to `constraints` in `SuggestionsBoxDecoration` to adjust the width 
 and height of the suggestions box. Using the two together will allow the suggestions box to be placed 
 almost anywhere.
+
+The suggestions box scrollbar is by default only visible during scrolling. Use the `scrollbarThumbAlwaysVisible` property to override this behaviour if you want to give the user a visual clue that there are more suggestions available in the list. 
+(The value will be passed to the `thumbVisibility` property of the Scrollbar widget). 
+
+The `scrollbarTrackAlwaysVisible` property (Material only!) can be used to make the scrollbar track stay visible even when not scrolling.
 
 #### Customizing the loader, the error and the "no items found" message
 You can use the `loadingBuilder`, `errorBuilder` and `noItemsFoundBuilder` to

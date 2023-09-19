@@ -1,3 +1,69 @@
+## 4.7.0 - 5-Sept-2023
+
+PR # 512 - 3 Major fixes (see PR) 
+
+## 4.6.2 - 19-June-2023
+
+PR # 500 - itemSeparatorBuilder added to material typeaheadformfield
+
+## 4.6.1 - 04-June-2023
+
+PR # 494 - Fix for scrollbar clickthrough
+PR # 495 - Fix mouse events propagating through the SuggestionBox to the underlying HTMLElementView
+
+## 4.6.0 - 29-May-2023
+
+PR # 493 - Support alternative (for example Grid) layouts of results
+
+## 4.5.0 - 28-May-2023
+
+PR # 489 - Added itemSeparatorBuilder, Removed top padding on scrollbar, Added autofillHints properties
+
+## 4.4.0 - 20-May-2023
+
+PR # 486 - add onTapOutside callback to typeahead
+PR # 485 - support placeholder style customization
+PR # 468 - Add "autoFlipMinHeight"
+
+## 4.3.8 - 30-April-2023
+
+PR # 484 - Fix for incorrect vertical offset calculation of suggestion box for flutter mobile web
+
+## 4.3.7 - 26-February-2023
+
+Update Changelog file
+
+## 4.3.6 - 18-February-2023
+Fixed visibility of cupertino decoration and formated code
+
+## 4.3.5 - 17-February-2023
+Fix in visibility of suggestions box classes
+
+## 4.3.4 - 16-February-2023
+Improved the main example to be able to read it in pub dev,
+
+## 4.3.3 - 1-Feburary-2023
+
+-- Apply PR to fix onSelected issue introduced in Flutter 3.7.0
+
+## 4.3.2 - 28-January-2023
+
+-- Update sdk level to 2.19.0 for Flutter 3.7.0
+
+## 4.3.1 - 28-January-2023
+
+-- PR #447 - fix: Use maybeOf for scrollable to not throw an exception in flutter …
+
+## 4.3.0 - 15-November-2022
+
+-- PR #436 - Added onReset callback to TypeAheadFormField
+-- PR #435 - Block up and down keys
+
+## 4.2.0 - 27-October-2022
+
+-- PR #432 - Fix suggestions box behavior on web
+-- PR #431 - Add autoFlipListDirection option
+
 ## 4.1.1 - 17-September-2022
 
 -- PR #428 - Fix some issues with web / arrows etc.
