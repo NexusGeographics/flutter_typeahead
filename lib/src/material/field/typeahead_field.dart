@@ -542,6 +542,9 @@ class TypeAheadField<T> extends StatefulWidget {
   // Adds a callback for the suggestion box opening or closing
   final void Function(bool)? onSuggestionsBoxToggle;
 
+  final SuggestionController? suggestionController;
+
+
   /// Creates a [TypeAheadField]
   TypeAheadField({
     required this.suggestionsCallback,
@@ -554,6 +557,7 @@ class TypeAheadField<T> extends StatefulWidget {
     this.suggestionsBoxDecoration = const SuggestionsBoxDecoration(),
     this.debounceDuration = const Duration(milliseconds: 300),
     this.suggestionsBoxController,
+    this.suggestionController,
     this.scrollController,
     this.loadingBuilder,
     this.noItemsFoundBuilder,
@@ -659,6 +663,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    widget.suggestionController?._addState(this);
 
     if (widget.textFieldConfiguration.controller == null) {
       this._textEditingController = TextEditingController();
@@ -775,6 +780,7 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
         suggestionsBox: _suggestionsBox,
         decoration: widget.suggestionsBoxDecoration,
         debounceDuration: widget.debounceDuration,
+        suggestionController: widget.suggestionController,
         intercepting: widget.intercepting,
         controller: this._effectiveController,
         loadingBuilder: widget.loadingBuilder,
@@ -922,4 +928,23 @@ class _TypeAheadFieldState<T> extends State<TypeAheadField<T>>
       
     );
   }
+  
 }
+
+class SuggestionController {
+  _TypeAheadFieldState? _state;
+  SuggestionsListState? _stateList;
+
+  void _addState(_TypeAheadFieldState state) {
+    _state = state;
+  }
+  void addStateList(SuggestionsListState stateList) {
+    _stateList = stateList;
+  }
+
+  void forceRefresh(){
+    _stateList?.invalidateSuggestions();
+  }
+
+}
+

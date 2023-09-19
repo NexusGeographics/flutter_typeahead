@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/src/keyboard_suggestion_selection_notifier.dart';
+import 'package:flutter_typeahead/src/material/field/typeahead_field.dart';
 import 'package:flutter_typeahead/src/should_refresh_suggestion_focus_index_notifier.dart';
 import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_box.dart';
 import 'package:flutter_typeahead/src/material/suggestions_box/suggestions_box_decoration.dart';
@@ -45,6 +46,7 @@ class SuggestionsList<T> extends StatefulWidget {
   final VoidCallback onSuggestionFocus;
   final KeyEventResult Function(FocusNode _, RawKeyEvent event) onKeyEvent;
   final bool hideKeyboardOnDrag;
+  final SuggestionController? suggestionController;
 
   SuggestionsList({
     required this.suggestionsBox,
@@ -53,6 +55,7 @@ class SuggestionsList<T> extends StatefulWidget {
     this.getImmediateSuggestions = false,
     this.onSuggestionSelected,
     this.suggestionsCallback,
+    this.suggestionController,
     this.itemBuilder,
     this.itemSeparatorBuilder,
     this.layoutArchitecture,
@@ -80,10 +83,10 @@ class SuggestionsList<T> extends StatefulWidget {
   });
 
   @override
-  _SuggestionsListState<T> createState() => _SuggestionsListState<T>();
+  SuggestionsListState<T> createState() => SuggestionsListState<T>();
 }
 
-class _SuggestionsListState<T> extends State<SuggestionsList<T>>
+class SuggestionsListState<T> extends State<SuggestionsList<T>>
     with SingleTickerProviderStateMixin {
   Iterable<T>? _suggestions;
   late bool _suggestionsValid;
@@ -98,7 +101,7 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
   List<FocusNode> _focusNodes = [];
   int _suggestionIndex = -1;
 
-  _SuggestionsListState() {
+  SuggestionsListState() {
     this._controllerListener = () {
       // If we came here because of a change in selected text, not because of
       // actual change in text
@@ -150,6 +153,8 @@ class _SuggestionsListState<T> extends State<SuggestionsList<T>>
   @override
   void initState() {
     super.initState();
+    widget.suggestionController?.addStateList(this);
+
 
     this._animationController = AnimationController(
       vsync: this,
